@@ -22,8 +22,6 @@ export class AuthenticationService {
         ...registerationData,
         password: hashedPassword,
       });
-
-      createdUser.password = undefined;
       return createdUser;
     } catch (error) {
       if (error?.code === MysqlErrorCode.UniqueViolation) {
@@ -43,7 +41,6 @@ export class AuthenticationService {
     try {
       const user = await this.userService.getByEmail(email);
       await this.verifyPassword(plainTextPassword, user.password);
-      user.password = undefined;
       return user;
     } catch (error) {
       throw new HttpException(
