@@ -2,13 +2,14 @@ import {
   HttpException,
   HttpStatus,
   Injectable,
+  InternalServerErrorException,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { InjectRepository } from '@nestjs/typeorm';
 import User from './entities/user.entity';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { PublicFileService } from 'src/file/public-file.service';
 import { PrivateFileService } from 'src/file/private-file.service';
@@ -17,6 +18,7 @@ import UserNotFoundException from './exception/user-not-found.exception';
 @Injectable()
 export class UserService {
   constructor(
+    private dataSource: DataSource,
     @InjectRepository(User)
     private usersRepository: Repository<User>,
     private readonly publicFileService: PublicFileService,
@@ -59,6 +61,32 @@ export class UserService {
       avatar,
     });
     return avatar;
+  }
+
+  async deleteAvatar(userId: number) {
+    const queryRunner = this.dataSource.createQueryRunner();
+    const user = await this.getById(userId);
+    const field = user.avatar?.id;
+    if (field) {
+      await queryRunner.connect();
+      await queryRunner.startTransaction();
+      try {
+        await queryRunner.manager.update(User, userId, {
+          ...user,
+          avatar: null,
+        });
+        await this.publicFileService.deletePublicFileWithQueryRunner(
+          field,
+          queryRunner,
+        );
+        await queryRunner.commitTransaction();
+      } catch (error) {
+        await queryRunner.rollbackTransaction();
+        throw new InternalServerErrorException();
+      } finally {
+        await queryRunner.release();
+      }
+    }
   }
 
   async addPrivateFile(userId: number, imageBuffer: Buffer, filename: string) {

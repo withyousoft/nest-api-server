@@ -24,6 +24,7 @@ export class PostController {
   @HttpCode(200)
   @UseGuards(JwtAuthenticationGuard)
   create(@Body() createPostDto: CreatePostDto, @Req() req: RequestWithUser) {
+    console.log(`============> ${createPostDto}`);
     return this.postService.create(createPostDto, req.user);
   }
 
