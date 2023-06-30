@@ -10,12 +10,15 @@ import {
   Req,
   HttpCode,
   Query,
+  UseInterceptors,
 } from '@nestjs/common';
 import { PostsService } from '../services/posts.service';
 import { CreatePostDto } from '../dto/create-post.dto';
 import { UpdatePostDto } from '../dto/update-post.dto';
 import JwtAuthenticationGuard from 'src/authentication/jwt-authentication.guard';
 import RequestWithUser from 'src/authentication/request-with-user.interface';
+import { PaginationParams } from 'src/utils/pagination-params';
+import { CacheInterceptor } from '@nestjs/cache-manager';
 
 @Controller('post')
 export class PostController {
@@ -28,14 +31,19 @@ export class PostController {
     return this.postsService.create(createPostDto, req.user);
   }
 
+  @UseInterceptors(CacheInterceptor)
   @Get()
-  findAll(@Query('search') search: string) {
+  findAll(
+    @Query('search') search: string,
+    @Query() { offset, limit }: PaginationParams,
+  ) {
     if (search) {
-      return this.postsService.searchForPosts(search);
+      return this.postsService.searchForPosts(search, offset, limit);
     }
-    return this.postsService.findAll();
+    return this.postsService.findAll(offset, limit);
   }
 
+  @UseInterceptors(CacheInterceptor)
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.postsService.findOne(+id);

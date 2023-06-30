@@ -6,6 +6,7 @@ import {
   Logger,
   ValidationPipe,
 } from '@nestjs/common';
+// import { runInCluster } from './run-in-cluster';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -17,4 +18,5 @@ async function bootstrap() {
     Logger.log('server is running on port 4000');
   });
 }
+// runInCluster(bootstrap);
 bootstrap();

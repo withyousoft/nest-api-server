@@ -20,17 +20,23 @@ export default class PostsSearchService {
     });
   }
 
-  async search(text: string) {
+  async search(text: string, offset?: number, limit?: number) {
     const { hits } = await this.elasticsearchService.search<PostSearchBody>({
       index: this.index,
+      from: offset,
+      size: limit,
       body: {
         query: {
           multi_match: { query: text, fields: ['title', 'content'] },
         },
+        sort: {
+          id: { order: 'asc' },
+        },
       },
     });
+    const count = hits.total.valueOf();
     const results = hits.hits.map((item) => item._source);
-    return results;
+    return { count, results };
   }
 
   async remove(postId: number) {
