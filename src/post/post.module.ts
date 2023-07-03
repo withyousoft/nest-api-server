@@ -8,6 +8,7 @@ import { SearchModule } from 'src/search/search.module';
 import { CacheModule } from '@nestjs/cache-manager';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import * as redisStore from 'cache-manager-redis-store';
+import { EmailModule } from 'src/email/email.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import * as redisStore from 'cache-manager-redis-store';
     }),
     TypeOrmModule.forFeature([Post]),
     SearchModule,
+    EmailModule,
   ],
   controllers: [PostController],
   providers: [PostsService, PostsSearchService],

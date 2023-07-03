@@ -7,9 +7,11 @@ import { UserModule } from './user/user.module';
 import { AuthenticationModule } from './authentication/authentication.module';
 import { APP_FILTER } from '@nestjs/core';
 import { ExceptionsLoggerFilter } from './utils/exceptions-logger.filter';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
+    ScheduleModule.forRoot(),
     PostModule,
     ConfigModule.forRoot({
       validationSchema: Joi.object({
@@ -34,6 +36,10 @@ import { ExceptionsLoggerFilter } from './utils/exceptions-logger.filter';
         ELASTICSEARCH_PASSWORD: Joi.string().required(),
         REDIS_HOST: Joi.string().required(),
         REDIS_PORT: Joi.number().required(),
+        EMAIL_HOST: Joi.string().required(),
+        EMAIL_PORT: Joi.number().required(),
+        EMAIL_USER: Joi.string().required(),
+        EMAIL_PASSWORD: Joi.string().required(),
       }),
     }),
     DatabaseModule,

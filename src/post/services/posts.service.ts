@@ -7,6 +7,7 @@ import { In, Repository } from 'typeorm';
 import PostNotFoundException from '../exception/post-not-found.exception';
 import User from 'src/user/entities/user.entity';
 import PostsSearchService from './posts-search.service';
+import EmailService from 'src/email/email.service';
 
 @Injectable()
 export class PostsService {
@@ -14,6 +15,7 @@ export class PostsService {
     @InjectRepository(Post)
     private postRepository: Repository<Post>,
     private postsSearchService: PostsSearchService,
+    private emailService: EmailService,
   ) {}
 
   async create(createPostDto: CreatePostDto, user?: User) {
@@ -23,6 +25,12 @@ export class PostsService {
     });
     await this.postRepository.save(newPost);
     await this.postsSearchService.indexPost(newPost);
+    await this.emailService.sendMail({
+      from: 'withyousoft1@hotmail.com',
+      to: 'yinzhequan510@gmail.com',
+      subject: 'test email from nest-app',
+      text: 'this is the test email content.',
+    });
     return newPost;
   }
 
