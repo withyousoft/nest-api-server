@@ -53,6 +53,9 @@ class User {
 
   @Column({ default: false })
   public isEmailConfirmed: boolean;
+
+  @Column({ default: false })
+  public isRegisteredWithGoogle: boolean;
 }
 
 export default User;

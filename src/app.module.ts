@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { PostModule } from './post/post.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import * as Joi from '@hapi/joi';
@@ -9,6 +9,9 @@ import { APP_FILTER } from '@nestjs/core';
 import { ExceptionsLoggerFilter } from './utils/exceptions-logger.filter';
 import { ScheduleModule } from '@nestjs/schedule';
 import { BullModule } from '@nestjs/bull';
+import LogsMiddleware from './utils/logs.middleware';
+import { LoggerModule } from './logger/logger.module';
+import HealthModule from './health/health.module';
 
 @Module({
   imports: [
@@ -55,11 +58,15 @@ import { BullModule } from '@nestjs/bull';
         EMAIL_USER: Joi.string().required(),
         EMAIL_PASSWORD: Joi.string().required(),
         TWO_FACTOR_AUTHENTICATION_APP_NAME: Joi.string().required(),
+        GOOGLE_AUTH_CLIENT_ID: Joi.string().required(),
+        GOOGLE_AUTH_CLIENT_SECRET: Joi.string().required(),
       }),
     }),
     DatabaseModule,
     UserModule,
     AuthenticationModule,
+    LoggerModule,
+    HealthModule,
   ],
   controllers: [],
   providers: [
@@ -69,4 +76,8 @@ import { BullModule } from '@nestjs/bull';
     },
   ],
 })
-export class AppModule {}
+export class AppModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LogsMiddleware).forRoutes('*');
+  }
+}

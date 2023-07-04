@@ -42,6 +42,16 @@ export class UserService {
     return newUser;
   }
 
+  async createWithGoogle(email: string, name: string) {
+    const newUser = await this.usersRepository.create({
+      email,
+      name,
+      isRegisteredWithGoogle: true,
+    });
+    await this.usersRepository.save(newUser);
+    return newUser;
+  }
+
   async getById(id: number) {
     const user = await this.usersRepository.findOne({ where: { id } });
     if (user) {

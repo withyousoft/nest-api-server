@@ -18,7 +18,8 @@ import { UpdatePostDto } from '../dto/update-post.dto';
 import RequestWithUser from 'src/authentication/request-with-user.interface';
 import { PaginationParams } from 'src/utils/pagination-params';
 import { CacheInterceptor } from '@nestjs/cache-manager';
-import JwtTwoFactorGuard from 'src/authentication/guard/jwt-two-factor.guard';
+// import JwtTwoFactorGuard from 'src/authentication/guard/jwt-two-factor.guard';
+import JwtAuthenticationGuard from 'src/authentication/guard/jwt-authentication.guard';
 
 @Controller('post')
 export class PostController {
@@ -26,7 +27,7 @@ export class PostController {
 
   @Post()
   @HttpCode(200)
-  @UseGuards(JwtTwoFactorGuard)
+  @UseGuards(JwtAuthenticationGuard)
   create(@Body() createPostDto: CreatePostDto, @Req() req: RequestWithUser) {
     return this.postsService.create(createPostDto, req.user);
   }

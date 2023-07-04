@@ -17,11 +17,14 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "documentation:serve": "npx @compodoc/compodoc -p tsconfig.json --serve"
   },
   "dependencies": {
+    "@compodoc/compodoc": "^1.1.21",
     "@elastic/elasticsearch": "^8.8.1",
     "@hapi/joi": "^17.1.1",
+    "@nestjs/axios": "^3.0.0",
     "@nestjs/bull": "^10.0.0",
     "@nestjs/cache-manager": "^2.0.1",
     "@nestjs/common": "^9.0.0",
@@ -33,6 +36,7 @@
     "@nestjs/passport": "^9.0.3",
     "@nestjs/platform-express": "^9.0.0",
     "@nestjs/schedule": "^3.0.1",
+    "@nestjs/terminus": "^10.0.1",
     "@nestjs/typeorm": "^9.0.1",
     "@types/adm-zip": "^0.5.0",
     "@types/aws-sdk": "^2.7.0",
@@ -51,6 +55,7 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
     "cookie-parser": "^1.4.6",
+    "googleapis": "^120.0.0",
     "imagemin": "^8.0.1",
     "imagemin-pngquant": "^9.0.2",
     "mysql2": "^3.3.5",
