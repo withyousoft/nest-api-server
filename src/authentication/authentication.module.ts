@@ -9,12 +9,14 @@ import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './strategy/jwt.strategy';
 import { TwoFactorAuthenticationController } from './two-factor-authentication.controller';
 import { TwoFactorAuthenticationService } from './two-factor-authentication.service';
+import { EmailModule } from 'src/email/email.module';
 
 @Module({
   imports: [
     UserModule,
     PassportModule,
     ConfigModule,
+    EmailModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],

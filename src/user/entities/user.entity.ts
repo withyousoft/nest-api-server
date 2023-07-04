@@ -50,6 +50,9 @@ class User {
 
   @Column({ default: false })
   public isTwoFactorAuthenticationEnabled: boolean;
+
+  @Column({ default: false })
+  public isEmailConfirmed: boolean;
 }
 
 export default User;

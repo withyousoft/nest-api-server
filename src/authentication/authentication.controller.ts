@@ -16,17 +16,24 @@ import { Response } from 'express';
 import JwtAuthenticationGuard from './guard/jwt-authentication.guard';
 import { UserService } from 'src/user/user.service';
 import JwtRefreshGuard from './guard/jwt-refresh.guard';
+import { EmailConfirmationService } from 'src/email/email-confirmation.service';
 
 @Controller('authentication')
 export class AuthenticationController {
   constructor(
     private readonly authenticationService: AuthenticationService,
     private readonly usersService: UserService,
+    private readonly emailConfirmationService: EmailConfirmationService,
   ) {}
 
   @Post('register')
   async register(@Body() registrationData: RegisterDto) {
-    return this.authenticationService.register(registrationData);
+    const user = await this.authenticationService.register(registrationData);
+    await this.emailConfirmationService.sendVerificationLink(
+      registrationData.email,
+    );
+
+    return user;
   }
 
   @HttpCode(200)

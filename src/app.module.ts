@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { PostModule } from './post/post.module';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import * as Joi from '@hapi/joi';
 import { DatabaseModule } from './database/database.module';
 import { UserModule } from './user/user.module';
@@ -8,9 +8,20 @@ import { AuthenticationModule } from './authentication/authentication.module';
 import { APP_FILTER } from '@nestjs/core';
 import { ExceptionsLoggerFilter } from './utils/exceptions-logger.filter';
 import { ScheduleModule } from '@nestjs/schedule';
+import { BullModule } from '@nestjs/bull';
 
 @Module({
   imports: [
+    BullModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        redis: {
+          host: configService.get('REDIS_HOST'),
+          port: Number(configService.get('REDIS_PORT')),
+        },
+      }),
+      inject: [ConfigService],
+    }),
     ScheduleModule.forRoot(),
     PostModule,
     ConfigModule.forRoot({
@@ -25,6 +36,9 @@ import { ScheduleModule } from '@nestjs/schedule';
         JWT_ACCESS_TOKEN_EXPIRATION_TIME: Joi.string().required(),
         JWT_REFRESH_TOKEN_SECRET: Joi.string().required(),
         JWT_REFRESH_TOKEN_EXPIRATION_TIME: Joi.string().required(),
+        JWT_VERIFICATION_TOKEN_SECRET: Joi.string().required(),
+        JWT_VERIFICATION_TOKEN_EXPIRATION_TIME: Joi.string().required(),
+        EMAIL_CONFIRMATION_URL: Joi.string().required(),
         AWS_REGION: Joi.string().required(),
         AWS_ACCESS_KEY_ID: Joi.string().required(),
         AWS_SECRET_ACCESS_KEY: Joi.string().required(),
