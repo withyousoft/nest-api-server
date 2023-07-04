@@ -10,7 +10,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import JwtAuthenticationGuard from 'src/authentication/jwt-authentication.guard';
+import JwtAuthenticationGuard from 'src/authentication/guard/jwt-authentication.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 import RequestWithUser from 'src/authentication/request-with-user.interface';
 import { Express, Response } from 'express';

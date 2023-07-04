@@ -9,13 +9,13 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthenticationService } from './authentication.service';
-import { LocalAuthenticationGuard } from './local-authentication.guard';
+import { LocalAuthenticationGuard } from './guard/local-authentication.guard';
 import RequestWithUser from './request-with-user.interface';
 import RegisterDto from './dto/register.dto';
 import { Response } from 'express';
-import JwtAuthenticationGuard from './jwt-authentication.guard';
+import JwtAuthenticationGuard from './guard/jwt-authentication.guard';
 import { UserService } from 'src/user/user.service';
-import JwtRefreshGuard from './jwt-refresh.guard';
+import JwtRefreshGuard from './guard/jwt-refresh.guard';
 
 @Controller('authentication')
 export class AuthenticationController {
@@ -46,6 +46,9 @@ export class AuthenticationController {
       accessTokenCookie,
       refreshTokenCookie.cookie,
     ]);
+    if (user.isTwoFactorAuthenticationEnabled) {
+      return;
+    }
     return user;
   }
 

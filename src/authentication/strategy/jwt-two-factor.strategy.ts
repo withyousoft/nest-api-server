@@ -4,12 +4,12 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Request } from 'express';
 import { UserService } from 'src/user/user.service';
-import TokenPayload from './token-payload.interface';
+import TokenPayload from '../token-payload.interface';
 
 @Injectable()
-export class JwtRefreshTokenStrategy extends PassportStrategy(
+export class JwtTwoFactorStrategy extends PassportStrategy(
   Strategy,
-  'jwt-refresh-token',
+  'jwt-two-factor',
 ) {
   constructor(
     private readonly configService: ConfigService,
@@ -18,19 +18,20 @@ export class JwtRefreshTokenStrategy extends PassportStrategy(
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
         (request: Request) => {
-          return request?.cookies?.Refresh;
+          return request?.cookies?.Authentication;
         },
       ]),
-      secretOrKey: configService.get('JWT_REFRESH_TOKEN_SECRET'),
-      passReqToCallback: true,
+      secretOrKey: configService.get('JWT_ACCESS_TOKEN_SECRET'),
     });
   }
 
-  async validate(request: Request, payload: TokenPayload) {
-    const refreshToken = request.cookies?.Refresh;
-    return this.userService.getUserIfRefreshTokenMatches(
-      refreshToken,
-      payload.userId,
-    );
+  async validate(payload: TokenPayload) {
+    const user = await this.userService.getById(payload.userId);
+    if (!user.isTwoFactorAuthenticationEnabled) {
+      return user;
+    }
+    if (payload.isSecondFactorAuthenticated) {
+      return user;
+    }
   }
 }

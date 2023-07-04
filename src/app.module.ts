@@ -40,6 +40,7 @@ import { ScheduleModule } from '@nestjs/schedule';
         EMAIL_PORT: Joi.number().required(),
         EMAIL_USER: Joi.string().required(),
         EMAIL_PASSWORD: Joi.string().required(),
+        TWO_FACTOR_AUTHENTICATION_APP_NAME: Joi.string().required(),
       }),
     }),
     DatabaseModule,
