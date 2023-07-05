@@ -13,7 +13,7 @@ class Log {
   @Column({ nullable: true })
   public context: string;
 
-  @Column()
+  @Column({ type: 'text' })
   public message: string;
 
   @Column()

@@ -10,6 +10,8 @@ import { JwtStrategy } from './strategy/jwt.strategy';
 import { TwoFactorAuthenticationController } from './two-factor-authentication.controller';
 import { TwoFactorAuthenticationService } from './two-factor-authentication.service';
 import { EmailModule } from 'src/email/email.module';
+import { GoogleAuthenticationController } from './google-authentication.controller';
+import { GoogleAuthenticationService } from './google-authentication.service';
 
 @Module({
   imports: [
@@ -35,7 +37,12 @@ import { EmailModule } from 'src/email/email.module';
     LocalStrategy,
     JwtStrategy,
     TwoFactorAuthenticationService,
+    GoogleAuthenticationService,
   ],
-  controllers: [AuthenticationController, TwoFactorAuthenticationController],
+  controllers: [
+    AuthenticationController,
+    TwoFactorAuthenticationController,
+    GoogleAuthenticationController,
+  ],
 })
 export class AuthenticationModule {}

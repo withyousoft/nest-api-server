@@ -17,7 +17,10 @@ import JwtAuthenticationGuard from './guard/jwt-authentication.guard';
 import { UserService } from 'src/user/user.service';
 import JwtRefreshGuard from './guard/jwt-refresh.guard';
 import { EmailConfirmationService } from 'src/email/email-confirmation.service';
+import { ApiBody, ApiTags } from '@nestjs/swagger';
+import LogInDto from './dto/log-in.dto';
 
+@ApiTags('authentication')
 @Controller('authentication')
 export class AuthenticationController {
   constructor(
@@ -36,6 +39,7 @@ export class AuthenticationController {
     return user;
   }
 
+  @ApiBody({ type: LogInDto })
   @HttpCode(200)
   @UseGuards(LocalAuthenticationGuard)
   @Post('log-in')
